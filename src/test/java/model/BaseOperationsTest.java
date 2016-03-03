@@ -35,7 +35,11 @@ public class BaseOperationsTest extends Assert {
         account.setCurrency("RUR");
 
         // Пользователь тратит
-        account.spend(10.00);
+        try {
+            account.spend(10.00);
+        } catch (NegativeBalanceException e) {
+
+        }
 
         // Сумма уменьшается
         assertEquals(50.23 - 10.00, account.getAmount(), DELTA);
@@ -57,7 +61,11 @@ public class BaseOperationsTest extends Assert {
         Date beforeOperation = new Date();
 
         // Пользователь тратит
-        account.spend(10.00);
+        try {
+            account.spend(10.00);
+        } catch (NegativeBalanceException e) {
+
+        }
 
         // Дата и время после выполнения операции
         Date afterOperation = new Date();
@@ -77,5 +85,22 @@ public class BaseOperationsTest extends Assert {
                         " " + op1.getDateTime(),
                 afterOperation.after(op1.getDateTime()) ||
                         afterOperation.equals(op1.getDateTime()));
+    }
+
+
+    @Test
+    public void testOperationSpendMoreThanUserHas() {
+        Account account = createUserWithOneAccount();
+
+        account.setAmount(50.00);
+        account.setCurrency("RUR");
+
+        try {
+            account.spend(60.00);
+        } catch (NegativeBalanceException e) {
+            assertEquals(50.00, account.getAmount(), DELTA);
+        }
+
+
     }
 }
