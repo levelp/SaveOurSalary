@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class Operation {
     /**
      * Категории (теги) этой операции
      */
-    private List<OperationCategory> categories;
+    private List<OperationCategory> categories = new ArrayList<>();
 
     /**
      * Констуктор без параметров нужен чтобы загружать из БД
