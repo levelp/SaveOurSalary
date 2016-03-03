@@ -6,7 +6,7 @@
 
     <groupId>java</groupId>
     <artifactId>SaveOurSalary</artifactId>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <version>1.0</version>
     <name>Домашняя бухгалтерия "Save Our Salary"</name>
 
