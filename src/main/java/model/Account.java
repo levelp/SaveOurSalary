@@ -63,4 +63,20 @@ public class Account {
     public void setCurrency(String currencyCode) {
         this.currency = Currency.getInstance(currencyCode);
     }
+
+    /**
+     * перевод средств с одного счёта на другой (в одной валюте)
+     * @param account счёт для перевода
+     * @param sum сумма перевода
+     * @return true если успешно, false если недостаточно денег
+     */
+    public boolean send(Account account, double sum) {
+        if(account.getCurrency().equals(this.currency)
+                && this.getAmount() >= sum){
+            this.setAmount(this.getAmount() - sum);
+            account.setAmount(account.getAmount() + sum);
+            return true;
+        }
+        return false;
+    }
 }

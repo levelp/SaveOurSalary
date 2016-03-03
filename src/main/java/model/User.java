@@ -12,4 +12,8 @@ public class User {
     public void addAccount(Account account) {
         accounts.add(account);
     }
+
+    public List<Account> getAccounts() {
+        return accounts;
+    }
 }
