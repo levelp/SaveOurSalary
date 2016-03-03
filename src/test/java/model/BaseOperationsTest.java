@@ -3,6 +3,7 @@ package model;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,6 +22,17 @@ public class BaseOperationsTest extends Assert {
         Account account = new Account();
         user.addAccount(account);
         return account;
+    }
+
+    private ArrayList<Account> createUserWithSeveralAccounts(int accounts) {
+        // Один пользователь
+        User user = new User();
+
+        for (int i = 0; i < accounts; i++) {
+            user.addAccount(new Account());
+        }
+
+        return (ArrayList<Account>) user.getAccounts();
     }
 
     /**
@@ -77,5 +89,20 @@ public class BaseOperationsTest extends Assert {
                         " " + op1.getDateTime(),
                 afterOperation.after(op1.getDateTime()) ||
                         afterOperation.equals(op1.getDateTime()));
+    }
+
+    /**
+     * Перевод денег с одного счёта на другой (в одной валюте)
+     */
+    @Test
+    public void testTransactionBetweenAccounts(){
+        ArrayList<Account> accounts = createUserWithSeveralAccounts(2);
+        for (Account acc : accounts){
+            acc.setCurrency("RUR");
+            acc.setAmount(1500.00);
+        }
+        accounts.get(0).send(accounts.get(1), 55.0);
+        assertEquals(1445.0, accounts.get(0).getAmount(), DELTA);
+        assertEquals(1555.0, accounts.get(1).getAmount(), DELTA);
     }
 }
