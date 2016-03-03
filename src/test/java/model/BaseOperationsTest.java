@@ -95,14 +95,38 @@ public class BaseOperationsTest extends Assert {
      * Перевод денег с одного счёта на другой (в одной валюте)
      */
     @Test
-    public void testTransactionBetweenAccounts(){
+    public void testTransactionBetweenAccounts() {
         ArrayList<Account> accounts = createUserWithSeveralAccounts(2);
-        for (Account acc : accounts){
+        for (Account acc : accounts) {
             acc.setCurrency("RUR");
             acc.setAmount(1500.00);
         }
         accounts.get(0).send(accounts.get(1), 55.0);
         assertEquals(1445.0, accounts.get(0).getAmount(), DELTA);
         assertEquals(1555.0, accounts.get(1).getAmount(), DELTA);
+    }
+
+    /**
+     * Категории операций:
+     * https://github.com/levelp/SaveOurSalary/issues/8
+     */
+    @Test
+    public void testCategories() {
+        // Пользователь может создать произвольное количество категорий
+        OperationCategory category = new OperationCategory();
+        category.setName("Транспорт");
+
+        OperationCategory category2 = new OperationCategory();
+        category2.setName("Оплата по карте");
+
+        // Каждую трату / покупку / перевод отнести к одной из категорий
+        Operation operation = new Operation(10);
+        operation.addCategory(category);
+        operation.addCategory(category2);
+
+        // У каждой операции можно получить список категорий
+        List<OperationCategory> list = operation.getCategories();
+        assertEquals(2, list.size());
+        assertEquals("Транспорт", list.get(0).getName());
     }
 }

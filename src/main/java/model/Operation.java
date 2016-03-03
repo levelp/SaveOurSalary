@@ -1,6 +1,7 @@
 package model;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Операция со счётом
@@ -13,6 +14,17 @@ public class Operation {
      */
     private Date dateTime = new Date();
 
+    /**
+     * Категории (теги) этой операции
+     */
+    private List<OperationCategory> categories;
+
+    /**
+     * Констуктор без параметров нужен чтобы загружать из БД
+     */
+    protected Operation() {
+    }
+
     public Operation(double sum) {
         this.sum = sum;
     }
@@ -23,5 +35,13 @@ public class Operation {
 
     public Date getDateTime() {
         return dateTime;
+    }
+
+    public void addCategory(OperationCategory category) {
+        categories.add(category);
+    }
+
+    public List<OperationCategory> getCategories() {
+        return categories;
     }
 }
