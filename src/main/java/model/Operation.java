@@ -1,5 +1,7 @@
 package model;
 
+import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -7,8 +9,18 @@ import java.util.List;
 /**
  * Операция со счётом
  */
+@Entity
+@Table(name = "operation")
 public class Operation {
-    private double sum;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
+
+    /**
+     * Сумма операции
+     */
+    @Column(name = "sum")
+    private BigDecimal sum;
 
     /**
      * Дата и время выполнения операции
@@ -18,7 +30,14 @@ public class Operation {
     /**
      * Категории (теги) этой операции
      */
+    @ManyToMany(targetEntity = OperationCategory.class, mappedBy = "operations", fetch = FetchType.EAGER)
     private List<OperationCategory> categories = new ArrayList<>();
+    /**
+     * Ссылка на аккаунт, которому принадлежит операция
+     */
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "account_id")
+    private Account account;
 
     /**
      * Констуктор без параметров нужен чтобы загружать из БД
@@ -27,11 +46,11 @@ public class Operation {
     }
 
     public Operation(double sum) {
-        this.sum = sum;
+        this.sum = new BigDecimal(sum);
     }
 
     public double getSum() {
-        return sum;
+        return sum.doubleValue();
     }
 
     public Date getDateTime() {
@@ -44,5 +63,13 @@ public class Operation {
 
     public List<OperationCategory> getCategories() {
         return categories;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
     }
 }

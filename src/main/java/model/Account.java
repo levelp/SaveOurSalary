@@ -1,5 +1,6 @@
 package model;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
@@ -15,7 +16,16 @@ import java.util.List;
  * На счету хранится (учтена) определённая сумма.
  * В определённой (одной) валюте.
  */
+@Entity // JPA-аннотация
+@Table(name = "account")
 public class Account {
+    /**
+     * Первичный ключ (PrimaryKey)
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
+
     /**
      * Сумма на счёте
      */
@@ -34,6 +44,7 @@ public class Account {
     /**
      * Операции со счётом
      */
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
     private List<Operation> operations = new ArrayList<>();
 
     /**
@@ -44,7 +55,7 @@ public class Account {
     public void spend(double sum) throws NegativeBalanceException {
         operations.add(new Operation(sum));
         if (sum <= amount)
-        amount -= sum;
+            amount -= sum;
         else
             throw new NegativeBalanceException();
     }
