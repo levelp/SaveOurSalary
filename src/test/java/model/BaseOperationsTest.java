@@ -3,6 +3,7 @@ package model;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.security.AccessControlContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -128,5 +129,47 @@ public class BaseOperationsTest extends Assert {
         List<OperationCategory> list = operation.getCategories();
         assertEquals(2, list.size());
         assertEquals("Транспорт", list.get(0).getName());
+    }
+
+    @Test
+    /*
+    *Тест перевод со счета на счет с удержанием комиссии
+     */
+    public void testFromDebitToCredit(){
+        //инициализация аккаунтов с начальными данными
+        Account debitCard = new Account();
+        Account creditCard = new Account();
+
+        debitCard.setAmount(150.00);
+        debitCard.setCurrency("RUR");
+        debitCard.setType("DebitCard");
+        creditCard.setAmount(200.00);
+        creditCard.setCurrency("RUR");
+        creditCard.setType("CreditCard");
+
+        //перевод с дебетовой карты на кредитную с фиксированной комиссией
+        debitCard.sendWithFixTax(creditCard, 15.00, 1.00);
+        //тест
+        assertEquals(150.00-15.00-1.00, debitCard.getAmount(),DELTA);
+
+        //перевод с дебетовой карты на кредитную с комиссией в процентах
+        debitCard.sendWithFlowTax(creditCard, 15.00, 5);
+        //тест
+        assertEquals(134.00-15.00-15.00*5/100, debitCard.getAmount(), DELTA);
+
+        //тест на количество операций в каждой аккаунте
+        assertEquals(2,debitCard.getOperations().size());
+        assertEquals(2,creditCard.getOperations().size());
+
+        //тест что на дебетовом аккаунте from - debib, into - credit
+        assertEquals("DebitCard",debitCard.getOperationById(0).getFromAccount());
+        assertEquals("CreditCard",debitCard.getOperationById(0).getIntoAccount());
+
+        //тест что во второй операции на аккаунте кредитки from - debit, into - credit
+        assertEquals("DebitCard",creditCard.getOperationById(1).getFromAccount());
+        assertEquals("CreditCard",creditCard.getOperationById(1).getIntoAccount());
+
+
+
     }
 }

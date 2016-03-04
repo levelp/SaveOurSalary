@@ -21,6 +21,16 @@ public class Operation {
     private List<OperationCategory> categories = new ArrayList<>();
 
     /**
+     *  указание аккаунта для перевода
+     */
+    private String intoAccount;
+
+    /**
+    * указание аккаунта с которого сделан перевод
+     */
+    private String fromAccount;
+
+    /**
      * Констуктор без параметров нужен чтобы загружать из БД
      */
     protected Operation() {
@@ -45,4 +55,12 @@ public class Operation {
     public List<OperationCategory> getCategories() {
         return categories;
     }
+
+    public void setIntoAccount(String intoName){this.intoAccount = intoName;}
+
+    public String getIntoAccount(){return intoAccount;}
+
+    public void setFromAccount(String fromAccount){ this.fromAccount = fromAccount;}
+
+    public String getFromAccount(){return fromAccount;}
 }

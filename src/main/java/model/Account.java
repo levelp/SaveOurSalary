@@ -57,6 +57,16 @@ public class Account {
         return currency;
     }
 
+    private String type; //тип аккаунта (кридетная карта, дебетовая карта, наличные)
+
+    public void setType(String typeIn){this.type = typeIn;}
+
+    public String getType(){ return type;}
+
+    public Operation getOperationById(int num_in){
+        return operations.get(num_in);
+    }
+
     /**
      * @param currencyCode Код валюты
      */
@@ -78,5 +88,52 @@ public class Account {
             return true;
         }
         return false;
+    }
+
+    /**
+     * метод заполнения данных об операции /создаем новую операцию/заполняем исходящий и входящий аккаунт на обоих счетах
+     */
+    private void fillOperationData(Account account, double sum) {
+        //добавляем операцию для базового класса
+        this.operations.add(new Operation(sum));
+        //добавляем последней операции идентификатор целевого счета
+        this.operations.get(this.operations.size()-1).setIntoAccount(account.getType());
+        this.operations.get(this.operations.size()-1).setFromAccount(type);
+
+        //добавляем операцию к аккаунту цели
+        account.operations.add(new Operation(sum));
+        //добавляем ссылки на аккаунты
+        account.operations.get(account.operations.size()-1).setFromAccount(type);
+        account.operations.get(account.operations.size()-1).setIntoAccount(account.getType());
+    }
+
+
+    /**
+     *
+      * @param account - аккаунт на который производится перевод
+     * @param sum   - сумма транзакции
+     * @param invoice   - размер комиссии
+     */
+    public void sendWithFixTax( Account account, double sum, double invoice){
+        this.send(account, sum);
+        this.setAmount(this.getAmount() - invoice);
+        this.fillOperationData(account, sum);
+
+
+    }
+
+    /**
+     * перевод с аккаунта на аккаунт с комиссией, в процентах от перевода
+     * @param account - входящий аккаунт, на который производится перевод
+     * @param sum - сумма перевода
+     * @param percent - процент перевода
+     */
+    public void sendWithFlowTax(Account account, double sum, double percent) {
+        if ( percent >= 1){ percent = percent/100;} //пересчет процентов
+        if (percent >= 0){
+            this.send(account, sum);
+            this.setAmount(this.getAmount() - sum*percent);
+            this.fillOperationData(account, sum);
+        }
     }
 }
