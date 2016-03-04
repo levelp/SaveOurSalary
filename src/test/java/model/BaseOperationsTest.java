@@ -48,7 +48,11 @@ public class BaseOperationsTest extends Assert {
         account.setCurrency("RUR");
 
         // Пользователь тратит
-        account.spend(10.00);
+        try {
+            account.spend(10.00);
+        } catch (NegativeBalanceException ignored) {
+            fail("У пользователя достаточно средств, не должно быть исключения");
+        }
 
         // Сумма уменьшается
         assertEquals(50.23 - 10.00, account.getAmount(), DELTA);
@@ -70,7 +74,11 @@ public class BaseOperationsTest extends Assert {
         Date beforeOperation = new Date();
 
         // Пользователь тратит
-        account.spend(10.00);
+        try {
+            account.spend(10.00);
+        } catch (NegativeBalanceException ignored) {
+            fail("У пользователя достаточно средств, не должно быть исключения");
+        }
 
         // Дата и время после выполнения операции
         Date afterOperation = new Date();
@@ -135,7 +143,7 @@ public class BaseOperationsTest extends Assert {
      * Увеличение суммы на счёте
      */
     @Test
-    public void testIncome(){
+    public void testIncome() {
         Account account = createUserWithOneAccount();
 
         account.setAmount(100.67);
@@ -143,15 +151,15 @@ public class BaseOperationsTest extends Assert {
 
         account.income(30.56);
         double sum = 100.67 + 30.56;
-        assertEquals("Суммы не совпадают",100.67 + 30.56, account.getAmount(), DELTA);
+        assertEquals("Суммы не совпадают", 100.67 + 30.56, account.getAmount(), DELTA);
 
         double rand = Math.random();
         account.income(rand);
-        assertEquals("Суммы не совпадают",sum+rand, account.getAmount(), DELTA);
+        assertEquals("Суммы не совпадают", sum + rand, account.getAmount(), DELTA);
     }
 
     @Test
-    public void testIncomeOperations(){
+    public void testIncomeOperations() {
         Account account = createUserWithOneAccount();
 
         account.setAmount(109.8);
@@ -187,21 +195,37 @@ public class BaseOperationsTest extends Assert {
      * Начисляются проценты на остаток по счету
      */
     @Test
-    public void testPercentIncome(){
+    public void testPercentIncome() {
 
-        Account debetAccount=new Account();
+        Account debetAccount = new Account();
         debetAccount.setAmount(100);
         debetAccount.setCurrency("RUR");
         debetAccount.setPercent(12);
 
-        User userD=new User();
+        User userD = new User();
         userD.addAccount(debetAccount);
 
-        assertEquals("Проценты за вклад",2,debetAccount.percentCalculate(2),DELTA);
+        assertEquals("Проценты за вклад", 2, debetAccount.percentCalculate(2), DELTA);
 
         debetAccount.percentApply(2);
-        assertEquals("Пополнение счета за вклад",102,debetAccount.getAmount(),DELTA);
-        assertEquals("Сумма последней операции",2,debetAccount.getLastOperationSum(),DELTA);
+        assertEquals("Пополнение счета за вклад", 102, debetAccount.getAmount(), DELTA);
+        assertEquals("Сумма последней операции", 2, debetAccount.getLastOperationSum(), DELTA);
+
+    }
+
+    @Test
+    public void testOperationSpendMoreThanUserHas() {
+        Account account = createUserWithOneAccount();
+
+        account.setAmount(50.00);
+        account.setCurrency("RUR");
+
+        try {
+            account.spend(60.00);
+        } catch (NegativeBalanceException e) {
+            assertEquals(50.00, account.getAmount(), DELTA);
+        }
+
 
     }
 }

@@ -41,9 +41,12 @@ public class Account {
      *
      * @param sum сумма
      */
-    public void spend(double sum) {
+    public void spend(double sum) throws NegativeBalanceException {
         operations.add(new Operation(sum));
+        if (sum <= amount)
         amount -= sum;
+        else
+            throw new NegativeBalanceException();
     }
 
     public double getAmount() {
