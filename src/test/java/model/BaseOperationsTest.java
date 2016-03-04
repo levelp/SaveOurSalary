@@ -1,5 +1,6 @@
 package model;
 
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -128,5 +129,57 @@ public class BaseOperationsTest extends Assert {
         List<OperationCategory> list = operation.getCategories();
         assertEquals(2, list.size());
         assertEquals("Транспорт", list.get(0).getName());
+    }
+
+    /**
+     * Увеличение суммы на счёте
+     */
+    @Test
+    public void testIncome(){
+        Account account = createUserWithOneAccount();
+
+        account.setAmount(100.67);
+        account.setCurrency("RUR");
+
+        account.income(30.56);
+        double sum = 100.67 + 30.56;
+        assertEquals("Суммы не совпадают",100.67 + 30.56, account.getAmount(), DELTA);
+
+        double rand = Math.random();
+        account.income(rand);
+        assertEquals("Суммы не совпадают",sum+rand, account.getAmount(), DELTA);
+    }
+
+    @Test
+    public void testIncomeOperations(){
+        Account account = createUserWithOneAccount();
+
+        account.setAmount(109.8);
+        account.setCurrency("RUR");
+
+        // Дата и время до выполнения операции
+        Date beforeOperation = new Date();
+
+        // Пользователь тратит
+        account.income(20.00);
+
+        // Дата и время после выполнения операции
+        Date afterOperation = new Date();
+
+        List<Operation> operations = account.getOperations();
+        assertEquals("Была одна операция", 1, operations.size());
+        Operation op1 = operations.get(0);
+        assertEquals(20.00, op1.getSum(), DELTA);
+
+        assertTrue("Дата и время записанные до операции " +
+                        "должны быть до операции или с тем же временем: " + beforeOperation +
+                        " " + op1.getDateTime(),
+                beforeOperation.before(op1.getDateTime()) ||
+                        beforeOperation.equals(op1.getDateTime()));
+        assertTrue("Дата и время записанные после операции " +
+                        "должны быть после операции: " + afterOperation +
+                        " " + op1.getDateTime(),
+                afterOperation.after(op1.getDateTime()) ||
+                        afterOperation.equals(op1.getDateTime()));
     }
 }
