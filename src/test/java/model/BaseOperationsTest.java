@@ -160,7 +160,7 @@ public class BaseOperationsTest extends Assert {
         // Дата и время до выполнения операции
         Date beforeOperation = new Date();
 
-        // Пользователь тратит
+        // Пользователь получает
         account.income(20.00);
 
         // Дата и время после выполнения операции

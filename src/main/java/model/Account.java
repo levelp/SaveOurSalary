@@ -79,4 +79,15 @@ public class Account {
         }
         return false;
     }
+
+    /**
+     * Пополнение счёта
+     *
+     * @param sum сумма
+     */
+    public void income(double sum) {
+        Operation operation = new Operation(sum);
+        amount += sum;
+        operations.add(operation);
+    }
 }
