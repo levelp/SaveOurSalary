@@ -27,6 +27,11 @@ public class Account {
     private Currency currency;
 
     /**
+     * Процент начисления годовых
+     */
+    private double percent;
+
+    /**
      * Операции со счётом
      */
     private List<Operation> operations = new ArrayList<>();
@@ -66,13 +71,14 @@ public class Account {
 
     /**
      * перевод средств с одного счёта на другой (в одной валюте)
+     *
      * @param account счёт для перевода
-     * @param sum сумма перевода
+     * @param sum     сумма перевода
      * @return true если успешно, false если недостаточно денег
      */
     public boolean send(Account account, double sum) {
-        if(account.getCurrency().equals(this.currency)
-                && this.getAmount() >= sum){
+        if (account.getCurrency().equals(this.currency)
+                && this.getAmount() >= sum) {
             this.setAmount(this.getAmount() - sum);
             account.setAmount(account.getAmount() + sum);
             return true;
@@ -89,5 +95,38 @@ public class Account {
         Operation operation = new Operation(sum);
         amount += sum;
         operations.add(operation);
+    }
+
+    /**
+     * @param percent Процент годовых
+     */
+    public void setPercent(double percent) {
+        this.percent = percent;
+    }
+
+    /**
+     * @param period Период в месяцах
+     */
+    public double percentCalculate(int period) {
+        return amount * period * percent / 1200;
+    }
+
+    /**
+     * Начисление процентов
+     *
+     * @param period Период в месяцах
+     */
+    public void percentApply(int period) {
+        double profit = percentCalculate(period);
+        amount += profit;
+        operations.add(new Operation(profit));
+
+    }
+
+    /**
+     * Сумма последней операции
+     */
+    public double getLastOperationSum() {
+        return operations.get(operations.size() - 1).getSum();
     }
 }

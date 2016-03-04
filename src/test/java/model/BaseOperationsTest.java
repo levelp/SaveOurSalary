@@ -182,4 +182,26 @@ public class BaseOperationsTest extends Assert {
                 afterOperation.after(op1.getDateTime()) ||
                         afterOperation.equals(op1.getDateTime()));
     }
+
+    /**
+     * Начисляются проценты на остаток по счету
+     */
+    @Test
+    public void testPercentIncome(){
+
+        Account debetAccount=new Account();
+        debetAccount.setAmount(100);
+        debetAccount.setCurrency("RUR");
+        debetAccount.setPercent(12);
+
+        User userD=new User();
+        userD.addAccount(debetAccount);
+
+        assertEquals("Проценты за вклад",2,debetAccount.percentCalculate(2),DELTA);
+
+        debetAccount.percentApply(2);
+        assertEquals("Пополнение счета за вклад",102,debetAccount.getAmount(),DELTA);
+        assertEquals("Сумма последней операции",2,debetAccount.getLastOperationSum(),DELTA);
+
+    }
 }
