@@ -77,6 +77,16 @@ public class Account {
         return currency;
     }
 
+    private String type; //тип аккаунта (кридетная карта, дебетовая карта, наличные)
+
+    public void setType(String typeIn){this.type = typeIn;}
+
+    public String getType(){ return type;}
+
+    public Operation getOperationById(int num_in){
+        return operations.get(num_in);
+    }
+
     /**
      * @param currencyCode Код валюты
      */
@@ -158,63 +168,30 @@ public class Account {
     }
 
     /**
-     * Операция обмена валюты
-     *
-     * @param user пользователь
-     * @param fromAcc счет, с которого списываетя сумма обмена
-     * @param toAcc счет, на который записывается сумма обмена
-     * @param rate курс валюты  @return
-     * @throws NegativeBalanceException
-     */
-    public void exchange(User user, Account fromAcc, Account toAcc, double rate) throws NegativeBalanceException {
-        double exchangeSum = toAcc.getAmount() * rate;
-        if (fromAcc.getAmount() > 0 && exchangeSum <= fromAcc.getAmount()){
-
-            fromAcc.setAmount(fromAcc.getAmount() - exchangeSum);
-
-            Operation exchangeOperation = new Operation();
-            OperationCategory operationCategory = new OperationCategory();
-            operationCategory.setName("EXCHANGE");
-            exchangeOperation.addCategory(operationCategory);
-            fromAcc.operations.add(exchangeOperation);
-            toAcc.operations.add(exchangeOperation);
-            if (user.getAccounts().contains(toAcc)){
-                toAcc.setAmount(toAcc.getAmount() + exchangeSum/rate);
-            }else{
-                toAcc.setAmount(exchangeSum/rate);
-                user.addAccount(toAcc);
-            }
-
-        } else {
-            throw new NegativeBalanceException();
-        }
-    }
-
-
-    /**
      * метод заполнения данных об операции /создаем новую операцию/заполняем исходящий и входящий аккаунт на обоих счетах
      */
     private void fillOperationData(Account account, double sum) {
         //добавляем операцию для базового класса
         this.operations.add(new Operation(sum));
         //добавляем последней операции идентификатор целевого счета
-        this.operations.get(this.operations.size() - 1).setIntoAccount(account.getType());
-        this.operations.get(this.operations.size() - 1).setFromAccount(type);
+        this.operations.get(this.operations.size()-1).setIntoAccount(account.getType());
+        this.operations.get(this.operations.size()-1).setFromAccount(type);
 
         //добавляем операцию к аккаунту цели
         account.operations.add(new Operation(sum));
         //добавляем ссылки на аккаунты
-        account.operations.get(account.operations.size() - 1).setFromAccount(type);
-        account.operations.get(account.operations.size() - 1).setIntoAccount(account.getType());
+        account.operations.get(account.operations.size()-1).setFromAccount(type);
+        account.operations.get(account.operations.size()-1).setIntoAccount(account.getType());
     }
 
 
     /**
-     * @param account - аккаунт на который производится перевод
-     * @param sum     - сумма транзакции
-     * @param invoice - размер комиссии
+     *
+      * @param account - аккаунт на который производится перевод
+     * @param sum   - сумма транзакции
+     * @param invoice   - размер комиссии
      */
-    public void sendWithFixTax(Account account, double sum, double invoice) {
+    public void sendWithFixTax( Account account, double sum, double invoice){
         this.send(account, sum);
         this.setAmount(this.getAmount() - invoice);
         this.fillOperationData(account, sum);
@@ -224,23 +201,20 @@ public class Account {
 
     /**
      * перевод с аккаунта на аккаунт с комиссией, в процентах от перевода
-     *
      * @param account - входящий аккаунт, на который производится перевод
-     * @param sum     - сумма перевода
+     * @param sum - сумма перевода
      * @param percent - процент перевода
      */
     public void sendWithFlowTax(Account account, double sum, double percent) {
-        if (percent >= 1) {
-            percent = percent / 100;
-        } //пересчет процентов
-        if (percent >= 0) {
+        if ( percent >= 1){ percent = percent/100;} //пересчет процентов
+        if (percent >= 0){
             this.send(account, sum);
-            this.setAmount(this.getAmount() - sum * percent);
+            this.setAmount(this.getAmount() - sum*percent);
             this.fillOperationData(account, sum);
         }
     }
 
-    public void cancelLastOneOperation() {
+    public void cancelLastOneOperation(){
         amount += operations.get(operations.size() - 1).getSum();
         operations.remove(operations.size() - 1);
     }

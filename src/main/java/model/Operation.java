@@ -97,4 +97,12 @@ public class Operation {
 
     public void setFromAccount(String fromAccount) {
         this.fromAccount = fromAccount;}
+
+    public void setIntoAccount(String intoName){this.intoAccount = intoName;}
+
+    public String getIntoAccount(){return intoAccount;}
+
+    public void setFromAccount(String fromAccount){ this.fromAccount = fromAccount;}
+
+    public String getFromAccount(){return fromAccount;}
 }
