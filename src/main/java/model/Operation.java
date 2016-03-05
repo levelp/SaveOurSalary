@@ -40,6 +40,16 @@ public class Operation {
     private Account account;
 
     /**
+     *  указание аккаунта для перевода
+     */
+    private String intoAccount;
+
+    /**
+     * указание аккаунта с которого сделан перевод
+     */
+    private String fromAccount;
+
+    /**
      * Констуктор без параметров нужен чтобы загружать из БД
      */
     protected Operation() {
@@ -72,4 +82,19 @@ public class Operation {
     public void setAccount(Account account) {
         this.account = account;
     }
+
+    public String getIntoAccount() {
+        return intoAccount;
+    }
+
+    public void setIntoAccount(String intoName) {
+        this.intoAccount = intoName;
+    }
+
+    public String getFromAccount() {
+        return fromAccount;
+    }
+
+    public void setFromAccount(String fromAccount) {
+        this.fromAccount = fromAccount;}
 }
