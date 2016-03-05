@@ -200,4 +200,9 @@ public class Account {
             this.fillOperationData(account, sum);
         }
     }
+
+    public void cancelLastOneOperation(){
+        amount += operations.get(operations.size() - 1).getSum();
+        operations.remove(operations.size() - 1);
+    }
 }
