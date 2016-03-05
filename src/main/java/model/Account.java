@@ -143,4 +143,38 @@ public class Account {
     public double getLastOperationSum() {
         return operations.get(operations.size() - 1).getSum();
     }
+
+    /**
+     * Операция обмена валюты
+     *
+     * @param user пользователь
+     * @param fromAcc счет, с которого списываетя сумма обмена
+     * @param toAcc счет, на который записывается сумма обмена
+     * @param rate курс валюты  @return
+     * @throws NegativeBalanceException
+     */
+    public void exchange(User user, Account fromAcc, Account toAcc, double rate) throws NegativeBalanceException {
+        double exchangeSum = toAcc.getAmount() * rate;
+        if (fromAcc.getAmount() > 0 && exchangeSum <= fromAcc.getAmount()){
+
+            fromAcc.setAmount(fromAcc.getAmount() - exchangeSum);
+
+            Operation exchangeOperation = new Operation();
+            OperationCategory operationCategory = new OperationCategory();
+            operationCategory.setName("EXCHANGE");
+            exchangeOperation.addCategory(operationCategory);
+            fromAcc.operations.add(exchangeOperation);
+            toAcc.operations.add(exchangeOperation);
+            if (user.getAccounts().contains(toAcc)){
+                toAcc.setAmount(toAcc.getAmount() + exchangeSum/rate);
+            }else{
+                toAcc.setAmount(exchangeSum/rate);
+                user.addAccount(toAcc);
+            }
+
+        } else {
+            throw new NegativeBalanceException();
+        }
+    }
+
 }

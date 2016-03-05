@@ -225,7 +225,70 @@ public class BaseOperationsTest extends Assert {
         } catch (NegativeBalanceException e) {
             assertEquals(50.00, account.getAmount(), DELTA);
         }
+    }
 
+    /**
+     *
+     * обмен валюты без счета меняемой валюты у пользователя
+     * @throws NegativeBalanceException
+     */
 
+    @Test
+    public void testExchangeOperationWithOutAccount() throws NegativeBalanceException {
+
+        // инициализация пользователя
+
+        User user = new User();
+        Account fromAcc = new Account();
+        fromAcc.setAmount(100.00);
+        fromAcc.setCurrency("RUR");
+        Account toAcc = new Account();
+        toAcc.setAmount(10.00);
+        toAcc.setCurrency("USD");
+        user.addAccount(fromAcc);
+
+        assertEquals(1, user.getAccounts().size());
+        fromAcc.exchange(user, user.getAccounts().get(0), toAcc ,2.00);
+
+        assertEquals(80.00, user.getAccounts().get(0).getAmount(), DELTA);
+        assertEquals(10.00, user.getAccounts().get(1).getAmount(), DELTA);
+        assertEquals(1, fromAcc.getOperations().size());
+        assertEquals(2, user.getAccounts().size());
+        assertEquals("Операция на счете списания", "EXCHANGE", user.getAccounts().get(0).getOperations().get(0).getCategories().get(0).getName());
+        assertEquals("Операция на счете зачисления", "EXCHANGE", user.getAccounts().get(1).getOperations().get(0).getCategories().get(0).getName());
+    }
+
+    /**
+     *
+     * обмен валюты со счетом меняемой валюты у пользователя
+     * @throws NegativeBalanceException
+     */
+    @Test
+    public void testExchangeOperationWithExchangeAccount() throws NegativeBalanceException {
+
+        // инициализация пользователя
+
+        User user = new User();
+        Account fromAcc = new Account();
+        fromAcc.setAmount(100.00);
+        fromAcc.setCurrency("RUR");
+        Account toAcc = new Account();
+        toAcc.setAmount(10.00);
+        toAcc.setCurrency("USD");
+        user.addAccount(fromAcc);
+
+        //Добавляем счет до выполнения операции обмена, т.е. имитируем наличие у пользователя счета с валютой обмена
+
+        user.addAccount(toAcc);
+        assertEquals(2, user.getAccounts().size());
+
+        fromAcc.exchange(user, user.getAccounts().get(0), toAcc ,2.00);
+
+        assertEquals(80.00, user.getAccounts().get(0).getAmount(), DELTA);
+        assertEquals(10.00, user.getAccounts().get(1).getAmount(), DELTA);
+        assertEquals(1, fromAcc.getOperations().size());
+        assertEquals(2, user.getAccounts().size());
+        assertEquals("Операция на счете списания", "EXCHANGE", user.getAccounts().get(0).getOperations().get(0).getCategories().get(0).getName());
+        assertEquals("Операция на счете зачисления", "EXCHANGE", user.getAccounts().get(1).getOperations().get(0).getCategories().get(0).getName());
     }
 }
