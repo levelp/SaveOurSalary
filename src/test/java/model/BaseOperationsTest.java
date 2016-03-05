@@ -229,7 +229,7 @@ public class BaseOperationsTest extends Assert {
 
     /**
      *
-     * обмен валюты без счета меняемой валюты у пользователя
+     * обмен валюты без счета меняемой валюты у пользователя112
      * @throws NegativeBalanceException
      */
 
