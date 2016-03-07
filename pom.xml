@@ -34,9 +34,9 @@
         Распространяется по собственной лицензии, близкой к лицензии BSD
         HSQLDB полностью написана на Java и отличается небольшим размером -->
         <dependency>
-            <groupId>hsqldb</groupId>
+            <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
-            <version>1.8.0.7</version>
+            <version>RELEASE</version>
         </dependency>
 
         <!-- Драйвер для базы данных SQLite -->
@@ -51,6 +51,13 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>RELEASE</version>
+        </dependency>
+
+        <!-- Драйвер для базы данных MySQL -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.38</version>
         </dependency>
 
         <!-- JUnit для тестирования нашего приложения -->

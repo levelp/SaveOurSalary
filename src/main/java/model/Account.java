@@ -23,7 +23,7 @@ public class Account {
      * Первичный ключ (PrimaryKey)
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     /**
@@ -75,16 +75,6 @@ public class Account {
 
     public Currency getCurrency() {
         return currency;
-    }
-
-    private String type; //тип аккаунта (кридетная карта, дебетовая карта, наличные)
-
-    public void setType(String typeIn){this.type = typeIn;}
-
-    public String getType(){ return type;}
-
-    public Operation getOperationById(int num_in){
-        return operations.get(num_in);
     }
 
     /**
@@ -174,24 +164,23 @@ public class Account {
         //добавляем операцию для базового класса
         this.operations.add(new Operation(sum));
         //добавляем последней операции идентификатор целевого счета
-        this.operations.get(this.operations.size()-1).setIntoAccount(account.getType());
-        this.operations.get(this.operations.size()-1).setFromAccount(type);
+        this.operations.get(this.operations.size() - 1).setIntoAccount(account.getType());
+        this.operations.get(this.operations.size() - 1).setFromAccount(type);
 
         //добавляем операцию к аккаунту цели
         account.operations.add(new Operation(sum));
         //добавляем ссылки на аккаунты
-        account.operations.get(account.operations.size()-1).setFromAccount(type);
-        account.operations.get(account.operations.size()-1).setIntoAccount(account.getType());
+        account.operations.get(account.operations.size() - 1).setFromAccount(type);
+        account.operations.get(account.operations.size() - 1).setIntoAccount(account.getType());
     }
 
 
     /**
-     *
-      * @param account - аккаунт на который производится перевод
-     * @param sum   - сумма транзакции
-     * @param invoice   - размер комиссии
+     * @param account - аккаунт на который производится перевод
+     * @param sum     - сумма транзакции
+     * @param invoice - размер комиссии
      */
-    public void sendWithFixTax( Account account, double sum, double invoice){
+    public void sendWithFixTax(Account account, double sum, double invoice) {
         this.send(account, sum);
         this.setAmount(this.getAmount() - invoice);
         this.fillOperationData(account, sum);
@@ -201,20 +190,23 @@ public class Account {
 
     /**
      * перевод с аккаунта на аккаунт с комиссией, в процентах от перевода
+     *
      * @param account - входящий аккаунт, на который производится перевод
-     * @param sum - сумма перевода
+     * @param sum     - сумма перевода
      * @param percent - процент перевода
      */
     public void sendWithFlowTax(Account account, double sum, double percent) {
-        if ( percent >= 1){ percent = percent/100;} //пересчет процентов
-        if (percent >= 0){
+        if (percent >= 1) {
+            percent = percent / 100;
+        } //пересчет процентов
+        if (percent >= 0) {
             this.send(account, sum);
-            this.setAmount(this.getAmount() - sum*percent);
+            this.setAmount(this.getAmount() - sum * percent);
             this.fillOperationData(account, sum);
         }
     }
 
-    public void cancelLastOneOperation(){
+    public void cancelLastOneOperation() {
         amount += operations.get(operations.size() - 1).getSum();
         operations.remove(operations.size() - 1);
     }

@@ -4,7 +4,6 @@ package model;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.security.AccessControlContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -226,111 +225,6 @@ public class BaseOperationsTest extends Assert {
         } catch (NegativeBalanceException e) {
             assertEquals(50.00, account.getAmount(), DELTA);
         }
-    }
-
-    /**
-     *
-     * обмен валюты без счета меняемой валюты у пользователя
-     * @throws NegativeBalanceException
-     */
-
-    @Test
-    public void testExchangeOperationWithOutAccount() throws NegativeBalanceException {
-
-        // инициализация пользователя
-
-        User user = new User();
-        Account fromAcc = new Account();
-        fromAcc.setAmount(100.00);
-        fromAcc.setCurrency("RUR");
-        Account toAcc = new Account();
-        toAcc.setAmount(10.00);
-        toAcc.setCurrency("USD");
-        user.addAccount(fromAcc);
-
-        assertEquals(1, user.getAccounts().size());
-        fromAcc.exchange(user, user.getAccounts().get(0), toAcc ,2.00);
-
-        assertEquals(80.00, user.getAccounts().get(0).getAmount(), DELTA);
-        assertEquals(10.00, user.getAccounts().get(1).getAmount(), DELTA);
-        assertEquals(1, fromAcc.getOperations().size());
-        assertEquals(2, user.getAccounts().size());
-        assertEquals("Операция на счете списания", "EXCHANGE", user.getAccounts().get(0).getOperations().get(0).getCategories().get(0).getName());
-        assertEquals("Операция на счете зачисления", "EXCHANGE", user.getAccounts().get(1).getOperations().get(0).getCategories().get(0).getName());
-    }
-
-    /**
-     *
-     * обмен валюты со счетом меняемой валюты у пользователя
-     * @throws NegativeBalanceException
-     */
-    @Test
-    public void testExchangeOperationWithExchangeAccount() throws NegativeBalanceException {
-
-        // инициализация пользователя
-
-        User user = new User();
-        Account fromAcc = new Account();
-        fromAcc.setAmount(100.00);
-        fromAcc.setCurrency("RUR");
-        Account toAcc = new Account();
-        toAcc.setAmount(10.00);
-        toAcc.setCurrency("USD");
-        user.addAccount(fromAcc);
-
-        //Добавляем счет до выполнения операции обмена, т.е. имитируем наличие у пользователя счета с валютой обмена
-
-        user.addAccount(toAcc);
-        assertEquals(2, user.getAccounts().size());
-
-        fromAcc.exchange(user, user.getAccounts().get(0), toAcc ,2.00);
-
-        assertEquals(80.00, user.getAccounts().get(0).getAmount(), DELTA);
-        assertEquals(10.00, user.getAccounts().get(1).getAmount(), DELTA);
-        assertEquals(1, fromAcc.getOperations().size());
-        assertEquals(2, user.getAccounts().size());
-        assertEquals("Операция на счете списания", "EXCHANGE", user.getAccounts().get(0).getOperations().get(0).getCategories().get(0).getName());
-        assertEquals("Операция на счете зачисления", "EXCHANGE", user.getAccounts().get(1).getOperations().get(0).getCategories().get(0).getName());
-    }
-
-    @Test
-    /*
-    *Тест перевод со счета на счет с удержанием комиссии
-     */
-    public void testFromDebitToCredit() {
-        //инициализация аккаунтов с начальными данными
-        Account debitCard = new Account();
-        Account creditCard = new Account();
-
-        debitCard.setAmount(150.00);
-        debitCard.setCurrency("RUR");
-        debitCard.setType("DebitCard");
-        creditCard.setAmount(200.00);
-        creditCard.setCurrency("RUR");
-        creditCard.setType("CreditCard");
-
-        //перевод с дебетовой карты на кредитную с фиксированной комиссией
-        debitCard.sendWithFixTax(creditCard, 15.00, 1.00);
-        //тест
-        assertEquals(150.00 - 15.00 - 1.00, debitCard.getAmount(), DELTA);
-
-        //перевод с дебетовой карты на кредитную с комиссией в процентах
-        debitCard.sendWithFlowTax(creditCard, 15.00, 5);
-        //тест
-        assertEquals(134.00 - 15.00 - 15.00 * 5 / 100, debitCard.getAmount(), DELTA);
-
-        //тест на количество операций в каждой аккаунте
-        assertEquals(2, debitCard.getOperations().size());
-        assertEquals(2, creditCard.getOperations().size());
-
-        //тест что на дебетовом аккаунте from - debib, into - credit
-        assertEquals("DebitCard", debitCard.getOperationById(0).getFromAccount());
-        assertEquals("CreditCard", debitCard.getOperationById(0).getIntoAccount());
-
-        //тест что во второй операции на аккаунте кредитки from - debit, into - credit
-        assertEquals("DebitCard", creditCard.getOperationById(1).getFromAccount());
-        assertEquals("CreditCard", creditCard.getOperationById(1).getIntoAccount());
-
 
 
     }

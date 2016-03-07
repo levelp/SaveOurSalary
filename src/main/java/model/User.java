@@ -18,14 +18,25 @@ import java.util.List;
 public class User {
     public static final String ALL_USERS = "User.allUsers";
     public static final String FIND_BY_LOGIN = "User.findByLogin";
+    /**
+     * Счета пользователя
+     */
     @OneToMany
     @JoinColumn
     List<Account> accounts = new ArrayList<>();
+    /**
+     * id пользователя
+     */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", insertable = false, updatable = false)
     private int id;
+    /**
+     * Логин пользователя
+     * Должен быть уникальным
+     */
+    @Column(unique = true)
     private String login;
-
     /**
      * Хеш пароля
      */
@@ -53,5 +64,9 @@ public class User {
 
     public int getId() {
         return id;
+    }
+
+    public boolean checkPassword(String password) throws Exception {
+        return Password.check(password, passwordHash);
     }
 }

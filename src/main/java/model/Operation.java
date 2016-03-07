@@ -13,13 +13,13 @@ import java.util.List;
 @Table(name = "operation")
 public class Operation {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     /**
      * Сумма операции
      */
-    @Column(name = "sum")
+    @Column(name = "`sum`")
     private BigDecimal sum;
 
     /**
@@ -29,6 +29,7 @@ public class Operation {
 
     /**
      * Категории (теги) этой операции
+     * FetchType.EAGER - загрузка "сразу"
      */
     @ManyToMany(targetEntity = OperationCategory.class, mappedBy = "operations", fetch = FetchType.EAGER)
     private List<OperationCategory> categories = new ArrayList<>();
@@ -40,7 +41,7 @@ public class Operation {
     private Account account;
 
     /**
-     *  указание аккаунта для перевода
+     * указание аккаунта для перевода
      */
     private String intoAccount;
 
@@ -96,13 +97,6 @@ public class Operation {
     }
 
     public void setFromAccount(String fromAccount) {
-        this.fromAccount = fromAccount;}
-
-    public void setIntoAccount(String intoName){this.intoAccount = intoName;}
-
-    public String getIntoAccount(){return intoAccount;}
-
-    public void setFromAccount(String fromAccount){ this.fromAccount = fromAccount;}
-
-    public String getFromAccount(){return fromAccount;}
+        this.fromAccount = fromAccount;
+    }
 }

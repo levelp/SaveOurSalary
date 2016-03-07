@@ -18,18 +18,36 @@ public class Password {
     private static final int iterations = 20 * 1000;
     private static final int saltLen = 32;
     private static final int desiredKeyLen = 256;
+    // Символы для генерации пароля
     private static final char[] symbols;
+    // Длина пароля
     private static final int PASSWORD_LEN = 8;
 
     static {
+        // Создаём список всех допустимых в пароле символов
+        // Спецсимволы
         StringBuilder chars = new StringBuilder("!@#$%&*()_-+=[]{}\\|:/?.,><");
+        // Цифры
         for (char c = '0'; c <= '9'; ++c)
             chars.append(c);
+        // Буквы
         for (char c = 'a'; c <= 'z'; ++c) {
             chars.append(c);
             chars.append(Character.toUpperCase(c));
         }
+        // Сохраняем полученный набор символов как массив
         symbols = chars.toString().toCharArray();
+    }
+
+    /**
+     * @return генерация пароля
+     */
+    public static String generate() {
+        SecureRandom random = new SecureRandom();
+        StringBuilder buf = new StringBuilder();
+        for (int i = 0; i < PASSWORD_LEN; ++i)
+            buf.append(symbols[random.nextInt(symbols.length)]);
+        return buf.toString();
     }
 
     /**
@@ -66,16 +84,5 @@ public class Password {
                 password.toCharArray(), salt, iterations, desiredKeyLen)
         );
         return Base64.getEncoder().encodeToString(key.getEncoded());
-    }
-
-    /**
-     * @return генерация пароля
-     */
-    public static String generate() {
-        SecureRandom random = new SecureRandom();
-        StringBuilder buf = new StringBuilder();
-        for (int i = 0; i < PASSWORD_LEN; ++i)
-            buf.append(symbols[random.nextInt(symbols.length)]);
-        return buf.toString();
     }
 }

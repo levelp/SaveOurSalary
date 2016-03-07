@@ -19,4 +19,15 @@ public class UserDAO extends DAO<User> {
         user.setPassword(password);
         save(user);
     }
+
+    /**
+     * Получение пользователя по логину из БД
+     *
+     * @param login логин
+     * @return Пользователь или null если пользователь не найден
+     */
+    public User findByLogin(String login) {
+        return (User) em.createQuery("SELECT u FROM User u WHERE u.login = :login").
+                setParameter("login", login).getSingleResult();
+    }
 }

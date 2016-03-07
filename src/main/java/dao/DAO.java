@@ -10,9 +10,11 @@ import javax.persistence.Persistence;
 public abstract class DAO<T> {
     EntityManagerFactory emf;
     EntityManager em;
+    // Какую базу данных сейчас использовать?
+    String persistenceUnitName = "Unit-tests-HSQLDB";
 
     public void startConnection() {
-        emf = Persistence.createEntityManagerFactory("Unit-tests-HSQLDB");
+        emf = Persistence.createEntityManagerFactory(persistenceUnitName);
         em = emf.createEntityManager();
         em.getTransaction().begin();
     }
