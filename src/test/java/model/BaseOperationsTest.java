@@ -162,12 +162,12 @@ public class BaseOperationsTest extends Assert {
         assertEquals(2,creditCard.getOperations().size());
 
         //тест что на дебетовом аккаунте from - debib, into - credit
-        assertEquals("DebitCard",debitCard.getOperationById(0).getFromAccount());
-        assertEquals("CreditCard",debitCard.getOperationById(0).getIntoAccount());
+        assertEquals(debitCard,debitCard.getOperationById(0).getFromAccount());
+        assertEquals(creditCard,debitCard.getOperationById(0).getIntoAccount());
 
         //тест что во второй операции на аккаунте кредитки from - debit, into - credit
-        assertEquals("DebitCard",creditCard.getOperationById(1).getFromAccount());
-        assertEquals("CreditCard",creditCard.getOperationById(1).getIntoAccount());
+        assertEquals(debitCard,creditCard.getOperationById(1).getFromAccount());
+        assertEquals(creditCard,creditCard.getOperationById(1).getIntoAccount());
 
 
 

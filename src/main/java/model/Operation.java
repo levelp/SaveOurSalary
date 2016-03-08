@@ -23,12 +23,12 @@ public class Operation {
     /**
      *  указание аккаунта для перевода
      */
-    private String intoAccount;
+    private Account intoAccount;
 
     /**
     * указание аккаунта с которого сделан перевод
      */
-    private String fromAccount;
+    private Account fromAccount;
 
     /**
      * Констуктор без параметров нужен чтобы загружать из БД
@@ -56,11 +56,11 @@ public class Operation {
         return categories;
     }
 
-    public void setIntoAccount(String intoName){this.intoAccount = intoName;}
+    public void setIntoAccount(Account intoAccount){this.intoAccount = intoAccount;}
 
-    public String getIntoAccount(){return intoAccount;}
+    public Account getIntoAccount(){return intoAccount;}
 
-    public void setFromAccount(String fromAccount){ this.fromAccount = fromAccount;}
+    public void setFromAccount(Account fromAccount){ this.fromAccount = fromAccount;}
 
-    public String getFromAccount(){return fromAccount;}
+    public Account getFromAccount(){return fromAccount;}
 }
