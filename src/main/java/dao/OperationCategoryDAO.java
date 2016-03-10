@@ -2,9 +2,14 @@ package dao;
 
 import model.OperationCategory;
 
+import javax.persistence.EntityManagerFactory;
 import java.util.List;
 
 public class OperationCategoryDAO extends DAO<OperationCategory> {
+    public OperationCategoryDAO(EntityManagerFactory emf) {
+        super(emf);
+    }
+
     public OperationCategory find(int id) {
         return em.find(OperationCategory.class, id);
     }

@@ -33,6 +33,7 @@ public class Operation {
      */
     @ManyToMany(targetEntity = OperationCategory.class, mappedBy = "operations", fetch = FetchType.EAGER)
     private List<OperationCategory> categories = new ArrayList<>();
+
     /**
      * Ссылка на аккаунт, которому принадлежит операция
      */

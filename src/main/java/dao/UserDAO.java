@@ -2,10 +2,16 @@ package dao;
 
 import model.User;
 
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import java.util.List;
 
 
 public class UserDAO extends DAO<User> {
+    public UserDAO(EntityManagerFactory emf) {
+        super(emf);
+    }
+
     public User find(int id) {
         return em.find(User.class, id);
     }
@@ -15,7 +21,7 @@ public class UserDAO extends DAO<User> {
     }
 
     public void addUser(String login, String password) throws Exception {
-        if (findByLogin(login) == null){
+        if (findByLogin(login) != null) {
             throw new UserAlreadyExistsException();
         }
         User user = new User();
@@ -31,7 +37,11 @@ public class UserDAO extends DAO<User> {
      * @return Пользователь или null если пользователь не найден
      */
     public User findByLogin(String login) {
-        return (User) em.createQuery("SELECT u FROM User u WHERE u.login = :login").
-                setParameter("login", login).getSingleResult();
+        try {
+            return (User) em.createQuery("SELECT u FROM User u WHERE u.login = :login").
+                    setParameter("login", login).getSingleResult();
+        } catch (NoResultException ignored) {
+            return null;
+        }
     }
 }

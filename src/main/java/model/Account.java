@@ -184,8 +184,6 @@ public class Account {
         this.send(account, sum);
         this.setAmount(this.getAmount() - invoice);
         this.fillOperationData(account, sum);
-
-
     }
 
     /**

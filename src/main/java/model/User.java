@@ -10,7 +10,7 @@ import java.util.List;
  * Пользователь системы
  */
 @Entity
-@Table(name = "user")
+@Table(name = "`user`")
 @NamedQueries({
         @NamedQuery(name = User.ALL_USERS, query = "select u from User u"),
         @NamedQuery(name = User.FIND_BY_LOGIN, query = "select u from User u where u.login = :login")

@@ -10,5 +10,7 @@
         <property name="connection.password"/>
         <!-- DB schema will be updated if needed -->
         <property name="hbm2ddl.auto">update</property>
+        <!-- Закрывать ли подключение к БД после сеанса работы -->
+        <property name="connection.shutdown">true</property>
     </session-factory>
 </hibernate-configuration>

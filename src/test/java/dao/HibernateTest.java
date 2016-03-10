@@ -2,26 +2,36 @@ package dao;
 
 import model.OperationCategory;
 import model.User;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import service.UserService;
 
-import javax.persistence.PersistenceException;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
+import javax.persistence.Persistence;
+import java.io.IOException;
 import java.util.List;
 
 public class HibernateTest extends Assert {
+    static EntityManagerFactory emf;
+
     UserDAO userDAO;
     UserService userService;
 
-    String getPersistenceUnitName() {
-        return "Unit-tests-HSQLDB";
+    @BeforeClass
+    public static void setUpClass() {
+        emf = Persistence.createEntityManagerFactory("Unit-tests-HSQLDB");
+    }
+
+    @AfterClass
+    public static void tearDownClass() {
+        System.out.println("Close EntityManagerFactory");
+        emf.close();
     }
 
     @Before
-    public void setUp() {
-        userDAO = new UserDAO();
-        userService = new UserService();
+    public void setUp() throws IOException {
+        userDAO = new UserDAO(emf);
+        userService = new UserService(emf);
     }
 
     /**
@@ -46,14 +56,41 @@ public class HibernateTest extends Assert {
         }
     }
 
+    @Test
+    public void testOneUserFindByLogin() throws Exception {
+        try {
+            userDAO.startConnection();
+            try {
+                User user = userDAO.findByLogin("admin");
+                if (user != null)
+                    userDAO.remove(user);
+                userDAO.closeConnection();
+                userDAO.startConnection();
+            } catch (NoResultException e) {
+                System.out.println("Not found");
+            }
+
+            userDAO.addUser("admin", "123");
+
+            // Печатаем всех пользователей
+            for (User u : userDAO.listALL()) {
+                System.out.println(u.getId() + " login = " + u.getLogin());
+            }
+
+            User user1 = userDAO.findByLogin("admin");
+            assertEquals("admin", user1.getLogin());
+            assertTrue(user1.checkPassword("123"));
+        } finally {
+            userDAO.closeConnection();
+        }
+    }
 
     /**
      * Автодополнение категорий операций
      */
     @Test
     public void testOperationCategoryAutocomplete() {
-        OperationCategoryDAO categoryDAO = new OperationCategoryDAO();
-        categoryDAO.persistenceUnitName = getPersistenceUnitName();
+        OperationCategoryDAO categoryDAO = new OperationCategoryDAO(emf);
         categoryDAO.startConnection();
 
         categoryDAO.add("A1");
@@ -76,8 +113,23 @@ public class HibernateTest extends Assert {
         try {
             userService.createUser("test", "888");
             fail("Не должно быть возможности создать пользователя с тем же логином");
-        } catch (PersistenceException e) {
+        } catch (UserAlreadyExistsException e) {
             System.out.println("All OK");
         }
+    }
+
+    String getPersistenceProperty(String propertyName) {
+        return (String) emf.getProperties().get(propertyName);
+    }
+
+    @Test
+    public void testGetConnectionProperties() {
+        String database = getPersistenceProperty("javax.persistence.jdbc.url");
+        String dbUser = getPersistenceProperty("javax.persistence.jdbc.user");
+        // Невозможно получить пароль в явном виде
+        String dbPassword = getPersistenceProperty("javax.persistence.jdbc.password");
+        System.out.println("database = " + database);
+        System.out.println("dbUser = " + dbUser);
+        System.out.println("dbPassword = " + dbPassword);
     }
 }

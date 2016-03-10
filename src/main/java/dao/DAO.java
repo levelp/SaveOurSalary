@@ -2,26 +2,26 @@ package dao;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 /**
- * Data Access Object
+ * Data Access Object - слой работы с базой данных
  */
 public abstract class DAO<T> {
+    // Определяет подключение к БД - какую БД сейчас использовать?
     EntityManagerFactory emf;
     EntityManager em;
-    // Какую базу данных сейчас использовать?
-    String persistenceUnitName = "Unit-tests-HSQLDB";
+
+    public DAO(EntityManagerFactory emf) {
+        this.emf = emf;
+    }
 
     public void startConnection() {
-        emf = Persistence.createEntityManagerFactory(persistenceUnitName);
         em = emf.createEntityManager();
         em.getTransaction().begin();
     }
 
     public void closeConnection() {
         em.getTransaction().commit();
-        emf.close();
     }
 
     public void save(T entity) {
