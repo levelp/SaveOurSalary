@@ -4,6 +4,7 @@ import model.User;
 
 import java.util.List;
 
+
 public class UserDAO extends DAO<User> {
     public User find(int id) {
         return em.find(User.class, id);
@@ -14,6 +15,9 @@ public class UserDAO extends DAO<User> {
     }
 
     public void addUser(String login, String password) throws Exception {
+        if (findByLogin(login) == null){
+            throw new UserAlreadyExistsException();
+        }
         User user = new User();
         user.setLogin(login);
         user.setPassword(password);
