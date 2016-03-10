@@ -41,14 +41,18 @@ public class Operation {
     private Account account;
 
     /**
-     * указание аккаунта для перевода
+     * Ссылка на аккаунт, с которого сделан перевод
      */
-    private String intoAccount;
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "from_account_id")
+    private Account fromAccount;
 
     /**
-     * указание аккаунта с которого сделан перевод
+     * Ссылка на аккаунт, на который сделан перевод
      */
-    private String fromAccount;
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "into_account_id")
+    private Account intoAccount;
 
     /**
      * Констуктор без параметров нужен чтобы загружать из БД
@@ -84,19 +88,19 @@ public class Operation {
         this.account = account;
     }
 
-    public String getIntoAccount() {
+    public Account getIntoAccount() {
         return intoAccount;
     }
 
-    public void setIntoAccount(String intoName) {
-        this.intoAccount = intoName;
+    public void setIntoAccount(Account intoAccount) {
+        this.intoAccount = intoAccount;
     }
 
-    public String getFromAccount() {
+    public Account getFromAccount() {
         return fromAccount;
     }
 
-    public void setFromAccount(String fromAccount) {
+    public void setFromAccount(Account fromAccount) {
         this.fromAccount = fromAccount;
     }
 }

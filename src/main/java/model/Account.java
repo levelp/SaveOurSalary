@@ -164,14 +164,14 @@ public class Account {
         //добавляем операцию для базового класса
         this.operations.add(new Operation(sum));
         //добавляем последней операции идентификатор целевого счета
-        this.operations.get(this.operations.size() - 1).setIntoAccount(account.getType());
-        this.operations.get(this.operations.size() - 1).setFromAccount(type);
+        this.operations.get(this.operations.size() - 1).setIntoAccount(account);
+        this.operations.get(this.operations.size() - 1).setFromAccount(this);
 
         //добавляем операцию к аккаунту цели
         account.operations.add(new Operation(sum));
         //добавляем ссылки на аккаунты
-        account.operations.get(account.operations.size() - 1).setFromAccount(type);
-        account.operations.get(account.operations.size() - 1).setIntoAccount(account.getType());
+        account.operations.get(account.operations.size() - 1).setFromAccount(this);
+        account.operations.get(account.operations.size() - 1).setIntoAccount(account);
     }
 
 
