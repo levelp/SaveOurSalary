@@ -233,7 +233,7 @@ public class BaseOperationsTest extends Assert {
     /*
     *Тест перевод со счета на счет с удержанием комиссии
      */
-    public void testFromDebitToCredit(){
+    public void testFromDebitToCredit() {
         //инициализация аккаунтов с начальными данными
         Account debitCard = new Account();
         Account creditCard = new Account();
@@ -248,16 +248,16 @@ public class BaseOperationsTest extends Assert {
         //перевод с дебетовой карты на кредитную с фиксированной комиссией
         debitCard.sendWithFixTax(creditCard, 15.00, 1.00);
         //тест
-        assertEquals(150.00-15.00-1.00, debitCard.getAmount(),DELTA);
+        assertEquals(150.00 - 15.00 - 1.00, debitCard.getAmount(), DELTA);
 
         //перевод с дебетовой карты на кредитную с комиссией в процентах
         debitCard.sendWithFlowTax(creditCard, 15.00, 5);
         //тест
-        assertEquals(134.00-15.00-15.00*5/100, debitCard.getAmount(), DELTA);
+        assertEquals(134.00 - 15.00 - 15.00 * 5 / 100, debitCard.getAmount(), DELTA);
 
         //тест на количество операций в каждой аккаунте
-        assertEquals(2,debitCard.getOperations().size());
-        assertEquals(2,creditCard.getOperations().size());
+        assertEquals(2, debitCard.getOperations().size());
+        assertEquals(2, creditCard.getOperations().size());
 
         //тест что на дебетовом аккаунте from - debib, into - credit
         assertEquals(debitCard, debitCard.getOperationById(0).getFromAccount());
@@ -266,8 +266,5 @@ public class BaseOperationsTest extends Assert {
         //тест что во второй операции на аккаунте кредитки from - debit, into - credit
         assertEquals(debitCard, creditCard.getOperationById(1).getFromAccount());
         assertEquals(creditCard, creditCard.getOperationById(1).getIntoAccount());
-
-
-
     }
 }
