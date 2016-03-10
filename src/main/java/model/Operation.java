@@ -35,13 +35,6 @@ public class Operation {
     private List<OperationCategory> categories = new ArrayList<>();
 
     /**
-     * Ссылка на аккаунт, которому принадлежит операция
-     */
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "account_id")
-    private Account account;
-
-    /**
      * Ссылка на аккаунт, с которого сделан перевод
      */
     @ManyToOne(optional = true)
@@ -61,8 +54,19 @@ public class Operation {
     protected Operation() {
     }
 
-    public Operation(double sum) {
+    /**
+     * @param sum         Сумма операции
+     * @param fromAccount С какого счёта переведена сумма
+     * @param intoAccount На какой счёт переведена сумма
+     */
+    public Operation(double sum, Account fromAccount, Account intoAccount) {
         this.sum = new BigDecimal(sum);
+        this.fromAccount = fromAccount;
+        this.intoAccount = intoAccount;
+    }
+
+    public Operation(double sum) {
+        this(sum, null, null);
     }
 
     public double getSum() {
@@ -79,14 +83,6 @@ public class Operation {
 
     public List<OperationCategory> getCategories() {
         return categories;
-    }
-
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
     }
 
     public Account getIntoAccount() {

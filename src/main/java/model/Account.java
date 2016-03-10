@@ -44,8 +44,9 @@ public class Account {
     /**
      * Операции со счётом
      */
-    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY)
     private List<Operation> operations = new ArrayList<>();
+
     private String type; //тип аккаунта (кридетная карта, дебетовая карта, наличные)
 
     /**
@@ -54,7 +55,7 @@ public class Account {
      * @param sum сумма
      */
     public void spend(double sum) throws NegativeBalanceException {
-        operations.add(new Operation(sum));
+        operations.add(new Operation(sum, this, null));
         if (sum <= amount)
             amount -= sum;
         else
@@ -119,7 +120,7 @@ public class Account {
      * @param sum сумма
      */
     public void income(double sum) {
-        Operation operation = new Operation(sum);
+        Operation operation = new Operation(sum, null, this);
         amount += sum;
         operations.add(operation);
     }
@@ -146,7 +147,7 @@ public class Account {
     public void percentApply(int period) {
         double profit = percentCalculate(period);
         amount += profit;
-        operations.add(new Operation(profit));
+        operations.add(new Operation(profit, null, this));
 
     }
 
@@ -161,17 +162,11 @@ public class Account {
      * метод заполнения данных об операции /создаем новую операцию/заполняем исходящий и входящий аккаунт на обоих счетах
      */
     private void fillOperationData(Account account, double sum) {
-        //добавляем операцию для базового класса
-        this.operations.add(new Operation(sum));
-        //добавляем последней операции идентификатор целевого счета
-        this.operations.get(this.operations.size() - 1).setIntoAccount(account);
-        this.operations.get(this.operations.size() - 1).setFromAccount(this);
+        //добавляем операцию для базового класса + добавляем последней операции идентификатор целевого счета
+        this.operations.add(new Operation(sum, this, account));
 
-        //добавляем операцию к аккаунту цели
-        account.operations.add(new Operation(sum));
-        //добавляем ссылки на аккаунты
-        account.operations.get(account.operations.size() - 1).setFromAccount(this);
-        account.operations.get(account.operations.size() - 1).setIntoAccount(account);
+        //добавляем операцию к аккаунту цели + добавляем ссылки на аккаунты
+        account.operations.add(new Operation(sum, this, account));
     }
 
 
