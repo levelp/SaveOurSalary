@@ -42,13 +42,17 @@ public class PropertiesTest extends Assert {
      */
     @Test
     public void testConfigProperties() throws IOException {
+        // Имя файла для загрузки
         String filename = "config.properties";
-        InputStream input = getClass().getClassLoader().getResourceAsStream(filename);
+        // InputStream input = PropertiesTest.class.getClassLoader().getResourceAsStream(filename);
+        InputStream input = getClass().getClassLoader().
+                getResourceAsStream(filename);
         if (input == null) {
             System.out.println("Sorry, unable to find " + filename);
             return;
         }
         Properties properties = new Properties();
+        // Считываем файл настроек в UTF-8
         properties.load(new InputStreamReader(input, "UTF-8"));
 
         Enumeration<?> e = properties.propertyNames();
