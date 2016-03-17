@@ -1,7 +1,9 @@
 --
 -- Создать базу данных "saveoursalary"
 --
-CREATE DATABASE saveoursalary;
+CREATE DATABASE IF NOT EXISTS saveoursalary;
+
+use saveoursalary;
 
 CREATE TABLE user (
   id           INT(11) NOT NULL AUTO_INCREMENT
@@ -17,12 +19,15 @@ CREATE TABLE user (
   COMMENT = 'Пользователи';
 
 
+
+INSERT INTO USER (login, passwordHash)
+VALUES ('admin', '234245');
+
+/*
 SELECT COUNT(*) AS TotalNumber
 FROM user
 WHERE name = 'Иван';
 
-INSERT INTO USER (login, passwordHash, NAME)
-VALUES ('admin4', '234245', 'Иван');
 
 UPDATE user
 SET name = 'Аркадий'
@@ -30,3 +35,4 @@ WHERE login = 'admin4';
 
 -- Удалить таблицу account
 DROP TABLE account;
+*/
