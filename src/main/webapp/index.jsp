@@ -3,9 +3,12 @@
 <head>
     <title>Домашняя бухгалтерия "Save Our Salary"</title>
 </head>
-<body>
+<br>
 <h1>Домашняя бухгалтерия "Save Our Salary"</h1>
 
 <a href="sysinfo">Информация о системе</a>
+<br>
+<a href="userlist">Список логинов</a>
+
 </body>
 </html>

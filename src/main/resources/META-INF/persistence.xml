@@ -3,6 +3,30 @@
              version="2.0" xmlns="http://java.sun.com/xml/ns/persistence"
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
 
+    <persistence-unit name="Production-MySQL" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <properties>
+            <!-- JDBC драйвер -->
+            <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+            <!-- URL для подключения к базе данных -->
+            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/saveoursalary"/>
+            <!-- Имя пользователя БД -->
+            <property name="javax.persistence.jdbc.user" value="root"/>
+            <!-- Пароль пользователя БД -->
+            <property name="javax.persistence.jdbc.password" value=""/>
+            <!-- Показывать SQL запросы перед выполнением -->
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+            <!-- Диалект языка SQL -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>
+            <!-- Закрывать ли подключение к БД после сеанса работы -->
+            <property name="hibernate.connection.shutdown" value="true"/>
+            <!-- Стратегия, по которой Hibernate меняет схему (стуктуру БД) -->
+            <!-- create-drop - пересоздание БД, т.к. это модульный тест -->
+            <property name="hibernate.hbm2ddl.auto" value="none"/>
+        </properties>
+    </persistence-unit>
+
     <persistence-unit name="Unit-tests-HSQLDB" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <properties>
@@ -84,3 +108,4 @@
         </properties>
     </persistence-unit>
 </persistence>
+

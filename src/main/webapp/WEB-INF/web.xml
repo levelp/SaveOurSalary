@@ -14,6 +14,15 @@
         <url-pattern>/sysinfo</url-pattern>
     </servlet-mapping>
 
+    <servlet-mapping>
+        <servlet-name>userlist</servlet-name>
+        <url-pattern>/userlist</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>userlist</servlet-name>
+        <servlet-class>servlets.UserListServlet</servlet-class>
+    </servlet>
+
     <filter>
         <filter-name>encodingFilter</filter-name>
         <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
