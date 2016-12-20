@@ -38,8 +38,17 @@ public class UserDAO extends DAO<User> {
      */
     public User findByLogin(String login) {
         try {
-            return (User) em.createQuery("SELECT u FROM User u WHERE u.login = :login").
+            return (User) em.createNamedQuery(User.FIND_BY_LOGIN).
                     setParameter("login", login).getSingleResult();
+
+            // Другие способы выполнения запроса:
+            // return (User) em.createQuery("SELECT u FROM User u WHERE u.login = :login").
+            //   setParameter("login", login).getSingleResult();
+            //return (User) em.createQuery(
+            //        "SELECT u FROM User u WHERE u.login = :login"). //  AND u.passwordHash = :regDate
+            //       setParameter("login", login).
+            //        //setParameter("regDate", "sdsds").
+            //       getSingleResult(); */
         } catch (NoResultException ignored) {
             return null;
         }

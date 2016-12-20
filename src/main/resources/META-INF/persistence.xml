@@ -102,7 +102,7 @@
             <property name="hibernate.format_sql" value="true"/>
             <!-- Диалект языка SQL -->
             <property name="hibernate.dialect"
-                      value="org.hibernate.dialect.PostgreSQL94Dialect"/>
+                      value="org.hibernate.dialect.PostgreSQL9Dialect"/>
             <!-- create-drop - пересоздание БД, т.к. это модульный тест -->
             <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
         </properties>

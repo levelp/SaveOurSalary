@@ -18,14 +18,15 @@ public class HibernateTest extends Assert {
     UserService userService;
 
     @BeforeClass
-    public static void setUpClass() {
+    public static void setUpClass() throws Exception {
         emf = Persistence.createEntityManagerFactory("Unit-tests-HSQLDB");
     }
 
     @AfterClass
-    public static void tearDownClass() {
+    public static void tearDownClass() throws Exception {
         System.out.println("Close EntityManagerFactory");
-        emf.close();
+        if (emf != null)
+            emf.close();
     }
 
     @Before

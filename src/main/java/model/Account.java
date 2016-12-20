@@ -17,7 +17,7 @@ import java.util.List;
  * В определённой (одной) валюте.
  */
 @Entity // JPA-аннотация
-@Table(name = "account")
+@Table(name = "account")  // моя_таблица
 public class Account {
     /**
      * Первичный ключ (PrimaryKey)
@@ -34,6 +34,7 @@ public class Account {
     /**
      * Валюта
      */
+    // @Transient // Это поле игнорировать при загрузке и записи
     private Currency currency;
 
     /**
@@ -46,8 +47,12 @@ public class Account {
      */
     @OneToMany(fetch = FetchType.LAZY)
     private List<Operation> operations = new ArrayList<>();
-
     private String type; //тип аккаунта (кридетная карта, дебетовая карта, наличные)
+
+    // TODO: Разобраться как Hibernate создаёт наследника
+    public List<Operation> getOperations() {
+        return operations;
+    }
 
     /**
      * Пользователь тратит деньги со счёта
@@ -68,10 +73,6 @@ public class Account {
 
     public void setAmount(double amount) {
         this.amount = amount;
-    }
-
-    public List<Operation> getOperations() {
-        return operations;
     }
 
     public Currency getCurrency() {

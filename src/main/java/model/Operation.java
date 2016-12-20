@@ -31,7 +31,8 @@ public class Operation {
      * Категории (теги) этой операции
      * FetchType.EAGER - загрузка "сразу"
      */
-    @ManyToMany(targetEntity = OperationCategory.class, mappedBy = "operations", fetch = FetchType.EAGER)
+    @ManyToMany(targetEntity = OperationCategory.class,
+            mappedBy = "operations", fetch = FetchType.EAGER)
     private List<OperationCategory> categories = new ArrayList<>();
 
     /**

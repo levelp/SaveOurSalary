@@ -24,6 +24,7 @@ public class User {
     @OneToMany
     @JoinColumn
     List<Account> accounts = new ArrayList<>();
+    String regDate;
     /**
      * id пользователя
      */
